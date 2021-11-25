@@ -23,24 +23,50 @@ def formConnection():
 
 
 class Test(Resource):
-    def get(self):
+    def get(self): #Just for Testing Connection
         return {'message': "Welcome to the ArcadeScores API."}, 200
 
 class Register(Resource):
-    def post(self):
+    def post(self):  #Register a New Account
         return;
 
 class Login(Resource):
-    def post(self):
+    def post(self): #Login to an Account
         return;
 
+class Session(Resource):
+    def get(self): #Check Session Valid
+        return;
+    def patch(self): #Update Session
+        return;
+    def delete(self): #Delete Session
+        return; 
+
 class Scores(Resource):
-    def get(self):
+    def get(self): #Return all scores, or a specified group
+        return;
+    def put(self): #Add new score
         return;
 
 class Times(Resource):
-    def get(self):
+    def get(self): #Return all scores, or a specified group
         return;
+    def put(self): #Add a new score
+        parser = reqparse.RequestParser();
+        parser.add_argument('userID',required=True);
+        parser.add_argument('timeInMilliseconds',required=True); #Caps at around 1000000000 milliseconds, or a little more than a week
+        args = parser.parse_args();
+        print(args)
+        try:
+            connection = formConnection();
+            query = "INSERT INTO times (userID,timeInMilliseconds,submissionTime) VALUES (%s,%s,NOW())";
+            cursor = connection.cursor(prepared = True);
+            cursor.execute(query,(args['userID'],args['timeInMilliseconds']));
+            connection.commit();
+            connection.close();
+        except:
+            raise ValueError('Querying Failed.')
+        return {'message': "Put Request Transaction Occured Successfully."}, 200;
 
 api.add_resource(Test,"/")
 api.add_resource(Register, '/register')
