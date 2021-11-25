@@ -20,3 +20,9 @@ create table scores (
     score int,
     submissionTime datetime
 );
+create table sessions(
+	sessionID varchar(255) NOT NULL,
+    userID int NOT NULL,
+	sessionDate datetime NOT NULL,
+    timeduration varchar(255) -- 1 HOUR or PERMANENT
+);
