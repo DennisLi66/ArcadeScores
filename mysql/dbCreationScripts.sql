@@ -11,12 +11,14 @@ create table users (
 create table times (
 	timeScoreID int primary key auto_increment,
 	userID int,
+    gameID int,
     timeInMilliseconds int,
     submissionTime datetime
 );
 create table scores (
 	scoreID int primary key auto_increment,
     userID int,
+    gameID int,
     score int,
     submissionTime datetime
 );

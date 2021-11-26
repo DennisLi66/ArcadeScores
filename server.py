@@ -5,22 +5,11 @@ from dotenv import load_dotenv #pip install python-dotenv
 import ast
 import mysql.connector #pip install mysql-connector-python
 
+from formConnectionModule import formConnection
+
+
 app = Flask(__name__)
 api = Api(app)
-
-def formConnection():
-    try:
-        load_dotenv()
-        conn = mysql.connector.connect(
-            host=os.getenv('SQLHOST'),
-            user=os.getenv('SQLUSER'),
-            password=os.getenv('SQLPASSWORD'),
-            database=os.getenv('SQLDATABASE')
-            )
-        return conn;        
-    except:
-        raise ValueError("There was no .env file or .env variables, or connection failed.")
-
 
 class Test(Resource):
     def get(self): #Just for Testing Connection
@@ -45,23 +34,37 @@ class Session(Resource):
 class Scores(Resource):
     def get(self): #Return all scores, or a specified group
         return;
-    def put(self): #Add new score
-        return;
+    def put(self): #Add new score #Will Need Session Checking Later
+        parser = reqparse.RequestParser();
+        parser.add_argument('userID',required=True);
+        parser.add_argument('score',required=True);
+        parser.add_argument('gameID',required=True);
+        args = parser.parse_args();
+        try:
+            connection = formConnection();
+            query = "INSERT INTO scores (userID,gameID,score,submissionTime) VALUES (%s,%s,%s,NOW())";
+            cursor = connection.cursor(prepared=True);
+            cursor.execute(query,(args['userID'],args['gameID'],args['score']))
+            connection.commit();
+            connection.close();
+        except:
+            raise ValueError('Querying Failed.')
+        return {'message':'Put Request Transaction Occured Successfully.'}, 200;
 
 class Times(Resource):
     def get(self): #Return all scores, or a specified group
         return;
-    def put(self): #Add a new score
+    def put(self): #Add a new score #Will need session checking later
         parser = reqparse.RequestParser();
         parser.add_argument('userID',required=True);
+        parser.add_argument('gameID',required=True);
         parser.add_argument('timeInMilliseconds',required=True); #Caps at around 1000000000 milliseconds, or a little more than a week
         args = parser.parse_args();
-        print(args)
         try:
             connection = formConnection();
-            query = "INSERT INTO times (userID,timeInMilliseconds,submissionTime) VALUES (%s,%s,NOW())";
+            query = "INSERT INTO times (userID,gameID,timeInMilliseconds,submissionTime) VALUES (%s,%s,%s,NOW())";
             cursor = connection.cursor(prepared = True);
-            cursor.execute(query,(args['userID'],args['timeInMilliseconds']));
+            cursor.execute(query,(args['userID'],args['gameID'],args['timeInMilliseconds']));
             connection.commit();
             connection.close();
         except:
