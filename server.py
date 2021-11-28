@@ -17,10 +17,6 @@ class Test(Resource):
     def get(self): #Just for Testing Connection
         return {'message': "Welcome to the ArcadeScores API."}, 200
 
-class Register(Resource):
-    def post(self):  #Register a New Account
-        return;
-
 class Login(Resource):
     def post(self): #Login to an Account
         return;

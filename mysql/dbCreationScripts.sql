@@ -6,6 +6,7 @@ create table users (
 	userID int primary key auto_increment,
     username varchar(50),
     email varchar(255) NOT NULL UNIQUE,
+    salt varchar(255) NOT NULL,
     passcode varchar(50)
 );
 create table times (
