@@ -29,6 +29,26 @@ class Sessions(Resource):
         except:
             raise ValueError('Querying Failed');
     def patch(self): #Update Session
+        parser = reqparse.RequestParser();
+        parser.add_argument('userID',required=True);
+        parser.add_argument('sessionID'required=True);
+        args = parser.parse_args();
+        try:
+            connection = formConnection();
+            query = """
+            UPDATE sessions SET sessionDate = NOW()
+            WHERE userID = %s AND sessionID = %s
+            AND (sessionID in (select sessionID FROM (select userID,sessionID, max(sessionDate) from sessions group by userID)))
+            AND (timeduration = "HOUR" AND NOW() < date_add(sessionDate,Interval 1 Hour)
+            """;
+            cursor = connection.cursor(prepared=True);
+            cursor.execute(query,(args['userID'],args['sessionID']));
+            connection.commit();
+            results = cursor.fetchall();
+            connection.close();
+            return results;  
+        except:
+            raise ValueError('Querying Failed')
         return;
     def delete(self): #Expire Session
         parser = reqparse.RequestParser();
@@ -46,7 +66,6 @@ class Sessions(Resource):
             connection.commit();
             results = cursor.fetchall();
             connection.close();
-            print(results);
             return results;       
         except:
             raise ValueError('Querying Failed')
