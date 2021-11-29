@@ -15,7 +15,8 @@ class Register(Resource):
         try:
             connection = formConnection();
             salt = bcrypt.gensalt(); #need to store salt too
-            hashPass = bcrypt.hashpw(args['password'],salt)
+            hashPass = bcrypt.hashpw(args['password'].encode('utf8'),salt)
+            print(hashPass)
             query = """
             INSERT INTO users (username,email,salt,passcode) VALUES
             (%s,%s,%s,%s)

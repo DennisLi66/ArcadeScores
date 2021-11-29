@@ -9,6 +9,8 @@ from formConnectionModule import formConnection
 from scoresEndpoint import Scores
 from timesEndpoint import Times
 from sessionsEndpoint import Sessions
+from registerEndpoint import Register
+from loginEndpoint import Login
 
 app = Flask(__name__)
 api = Api(app)
@@ -16,11 +18,6 @@ api = Api(app)
 class Test(Resource):
     def get(self): #Just for Testing Connection
         return {'message': "Welcome to the ArcadeScores API."}, 200
-
-class Login(Resource):
-    def post(self): #Login to an Account
-        return;
-
 
 api.add_resource(Test,"/")
 api.add_resource(Register, '/register')
