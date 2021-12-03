@@ -11,7 +11,10 @@ class Times(Resource):
         parser.add_argument('userID',required=True);
         parser.add_argument('gameID',required=True);
         parser.add_argument('timeInMilliseconds',required=True); #Caps at around 1000000000 milliseconds, or a little more than a week
+        parser.add_argument('sessionID',required=True);
         args = parser.parse_args();
+        if (!checkSession(args['userID'],args['sessionID'])):
+            return {'status':-2,'message':'Session Expired'}
         try:
             connection = formConnection();
             query = "INSERT INTO times (userID,gameID,timeInMilliseconds,submissionTime) VALUES (%s,%s,%s,NOW())";
@@ -19,8 +22,8 @@ class Times(Resource):
             cursor.execute(query,(args['userID'],args['gameID'],args['timeInMilliseconds']));
             connection.commit();
             connection.close();
-        except:
-            raise ValueError('Querying Failed.')
+        except Exception as e:
+            return {'message':e,'status':-1}
         return {'message': "Put Request Transaction Occured Successfully."}, 200;
 
 

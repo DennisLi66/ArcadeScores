@@ -12,7 +12,10 @@ class Scores(Resource):
         parser.add_argument('userID',required=True);
         parser.add_argument('score',required=True);
         parser.add_argument('gameID',required=True);
+        parser.add_argument('sessionID',required=True);
         args = parser.parse_args();
+        if (!checkSession(args['userID'],args['sessionID'])):
+            return {'status':-2,'message':'Session Expired'}
         try:
             connection = formConnection();
             query = "INSERT INTO scores (userID,gameID,score,submissionTime) VALUES (%s,%s,%s,NOW())";
@@ -20,8 +23,8 @@ class Scores(Resource):
             cursor.execute(query,(args['userID'],args['gameID'],args['score']))
             connection.commit();
             connection.close();
-        except:
-            raise ValueError('Querying Failed.')
+        except Exception as e:
+            return {'message':e,'status':-1}
         return {'message':'Put Request Transaction Occured Successfully.'}, 200;
 
 if __name__ == '__main__':

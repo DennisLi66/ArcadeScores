@@ -20,12 +20,10 @@ class Sessions(Resource):
             cursor = connection.cursor(prepared=True);
             cursor.execute(query,(args['userID'],args['sessionID']));
             connection.commit();
-            results = cursor.fetchall();
             connection.close();
-            return results;  
-        except:
-            raise ValueError('Querying Failed')
-        return;
+            return {'status':0,'message':'Update Occured Successfully.'};  
+        except Exception as e:
+            return {'status':-1,'message':e}
     def delete(self): #Expire Session
         parser = reqparse.RequestParser();
         parser.add_argument('userID',required=True);
@@ -40,12 +38,9 @@ class Sessions(Resource):
             cursor = connection.cursor(prepared=True);
             cursor.execute(query,(args['userID'],args['sessionID']));
             connection.commit();
-            results = cursor.fetchall();
             connection.close();
-            return results;       
-        except:
-            raise ValueError('Querying Failed')
-        return; 
-
+            return {'status':0,',message':'Delete Occured Successfully.'};       
+        except Exception as e:
+            return {'status':-1,'message':e}
 if __name__ == '__main__':
     print("Sessions Endpoint...")
