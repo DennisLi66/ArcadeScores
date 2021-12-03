@@ -19,9 +19,9 @@ class Test(Resource):
     def get(self): #Just for Testing Connection
         return {'message': "Welcome to the ArcadeScores API."}, 200
 
-api.add_resource(Test,"/")
-api.add_resource(Register, '/register')
-api.add_resource(Login, '/login')
+api.add_resource(Test,"/") #Local Tested
+api.add_resource(Register, '/register') #Local Tested
+api.add_resource(Login, '/login') #Local Tested
 api.add_resource(Scores, '/scores')
 api.add_resource(Times, '/times')
 api.add_resource(Sessions, '/sessions')

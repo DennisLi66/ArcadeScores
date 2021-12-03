@@ -17,24 +17,19 @@ class Login(Resource):
             connection = formConnection();
             cursor = connection.cursor(prepared = True);
             cursor.execute("SELECT * FROM users WHERE email = %s;",[args['email']]);
-            #connection.commit();
             results = cursor.fetchall();
             if (len(results) == 0):
                 connection.close();
                 return {'status':-1,'message':'No Such Account.'}
             else:
-                print(results);
                 hashPass = "";
                 salt = "";
-                userID = ""; #Might Be Int //CHECK THIS
-                for row in records:
+                userID = 0;
+                for row in results:
                     salt = row[3];
                     userID = row[0];
-                    #hashPass = row[4];
-                #check password: if correct create sessionID and send back as result
-                    #else go away
-                #newHashPass = bcrypt.hashpw(args['password'],salt)
-                if bcrypt.checkpw(args['password'],hashPass):
+                    hashPass = row[4];
+                if bcrypt.checkpw(args['password'].encode('utf-8'),hashPass.encode('utf-8')):
                     sessionSequence = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
                     insertSessionQuery = """
                     INSERT INTO sessions (sessionID,userID,sessionDate,timeDuration) VALUES (%s,%s,NOW(),%s)
@@ -47,8 +42,8 @@ class Login(Resource):
                     connection.close();
                     return {'status': -1, 'message':'No Matches'}, 200
             
-        except:
-            raise ValueError('Querying Failed.'); 
+        except Exception as e:
+            return {'status': -1, 'message': e}, 200
 
 
 
