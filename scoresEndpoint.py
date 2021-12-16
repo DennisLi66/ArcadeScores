@@ -6,7 +6,28 @@ from formConnectionModule import formConnection
 
 class Scores(Resource):
     def get(self): #Return all scores, or a specified group
-        return;
+        parser = reqparse.RequestParser();
+        parser.add_argument('userID',required=False);
+        parser.add_argument('gameID',required=True);
+        args = parser.parse_args();
+        try:
+            connection = formConnection();
+            query = "";
+            if (args['userID']):
+                query = "SELECT * FROM scores WHERE gameID = %s AND userID = %s ORDER BY score DESC";
+                cursor = connection.cursor(prepared=True);
+                cursor.execute(query,(args['gameID'],args['userID']));
+            else:
+                query = "SELECT * FROM scores WHERE gameID = %s ORDER BY score DESC";
+                cursor = connection.cursor(prepared=True);
+                cursor.execute(query,(args['gameID']));
+            res = cursor.fetchall(); 
+            connection.commit();
+            connection.close();
+            return {'results':res}
+        except Exception as e:
+            return {'message': str(e), 'status': -1}; 
+         
     def put(self): #Add new score #Will Need Session Checking Later
         parser = reqparse.RequestParser();
         parser.add_argument('userID',required=True);
@@ -14,7 +35,7 @@ class Scores(Resource):
         parser.add_argument('gameID',required=True);
         parser.add_argument('sessionID',required=True);
         args = parser.parse_args();
-        if (!checkSession(args['userID'],args['sessionID'])):
+        if (checkSession(args['userID'],args['sessionID']) == False):
             return {'status':-2,'message':'Session Expired'}
         try:
             connection = formConnection();
@@ -24,7 +45,7 @@ class Scores(Resource):
             connection.commit();
             connection.close();
         except Exception as e:
-            return {'message':e,'status':-1}
+            return {'message':str(e),'status':-1}
         return {'message':'Put Request Transaction Occured Successfully.'}, 200;
 
 if __name__ == '__main__':

@@ -43,7 +43,7 @@ class Login(Resource):
                     return {'status': -1, 'message':'No Matches'}, 200
             
         except Exception as e:
-            return {'status': -1, 'message': e}, 200
+            return {'status': -1, 'message': str(e)}, 200
 
 
 

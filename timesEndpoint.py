@@ -13,7 +13,7 @@ class Times(Resource):
         parser.add_argument('timeInMilliseconds',required=True); #Caps at around 1000000000 milliseconds, or a little more than a week
         parser.add_argument('sessionID',required=True);
         args = parser.parse_args();
-        if (!checkSession(args['userID'],args['sessionID'])):
+        if (checkSession(args['userID'],args['sessionID']) == False):
             return {'status':-2,'message':'Session Expired'}
         try:
             connection = formConnection();

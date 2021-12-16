@@ -23,7 +23,7 @@ class Sessions(Resource):
             connection.close();
             return {'status':0,'message':'Update Occured Successfully.'};  
         except Exception as e:
-            return {'status':-1,'message':e}
+            return {'status':-1,'message':str(e)}
     def delete(self): #Expire Session
         parser = reqparse.RequestParser();
         parser.add_argument('userID',required=True);
@@ -41,6 +41,6 @@ class Sessions(Resource):
             connection.close();
             return {'status':0,',message':'Delete Occured Successfully.'};       
         except Exception as e:
-            return {'status':-1,'message':e}
+            return {'status':-1,'message':str(e)}
 if __name__ == '__main__':
     print("Sessions Endpoint...")

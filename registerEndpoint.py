@@ -32,7 +32,7 @@ class Register(Resource):
         except mysql.connector.Error:
             return {'status':-1,'message':'This email is already registered.'},200
         except Exception as e:
-            return {'status':-1,'message':e}
+            return {'status':-1,'message':str(e)}
         return {'status':0,'message': "Post Request Transaction Occured Successfully."}, 200;
 
             
