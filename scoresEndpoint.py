@@ -24,7 +24,7 @@ class Scores(Resource):
             res = cursor.fetchall(); 
             connection.commit();
             connection.close();
-            return {'results':res}
+            return {'status':0,'results':res}
         except Exception as e:
             return {'message': str(e), 'status': -1}; 
          
