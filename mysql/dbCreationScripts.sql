@@ -29,3 +29,7 @@ create table sessions(
 	sessionDate datetime NOT NULL,
     timeduration varchar(255) -- 1 HOUR or PERMANENT
 );
+create table forgottenPasswordCodes(
+	email varchar(255) NOT NULL UNIQUE,
+    fcode varchar(10) NOT NULL
+);

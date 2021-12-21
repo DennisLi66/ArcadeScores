@@ -11,6 +11,9 @@ from timesEndpoint import Times
 from sessionsEndpoint import Sessions
 from registerEndpoint import Register
 from loginEndpoint import Login
+from forgotPasswordEndpoint import ForgotPassword
+from forgotPasswordCodeEndpoint import ForgotPasswordCode
+from changePasswordEndpoint import ChangePassword
 
 app = Flask(__name__)
 api = Api(app)
@@ -25,6 +28,8 @@ api.add_resource(Login, '/login') #Local Tested
 api.add_resource(Scores, '/scores')
 api.add_resource(Times, '/times')
 api.add_resource(Sessions, '/sessions')
+api.add_resource(ForgotPassword, '/forgotpassword')
+api.add_resource(ForgotPasswordCode, '/forgotpasswordcode')
 
 if __name__ == '__main__':
     print('Server Started...')
