@@ -20,7 +20,7 @@ class Register(Resource):
                 raise ValueError("MYSQL Connection Failed.")
             salt = bcrypt.gensalt(); #need to store salt too
             hashPass = bcrypt.hashpw(args['password'].encode('utf-8'),salt)
-            print(hashPass)
+            #print(hashPass)
             query = """
             INSERT INTO users (username,email,salt,passcode) VALUES
             (%s,%s,%s,%s)

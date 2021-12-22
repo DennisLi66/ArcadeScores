@@ -22,6 +22,10 @@ class ForgotPassword(Resource):
             cursor.execute(query,(code,args['email'],code));
             connection.commit();
             connection.close();
+            #FIX THIS: SEND EMAIL HERE
+            print(cursor.rowcount);
+            if (cursor.rowcount == 1):
+                print(cursor.rowcount)
             return {'status':0};
         except Exception as e:
             return {'message': str(e), 'status': -1}; 
