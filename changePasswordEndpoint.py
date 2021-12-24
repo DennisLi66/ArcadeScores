@@ -17,11 +17,28 @@ class ChangePassword(Resource):
         parser.add_argument('code',required=False);
         args = parser.parse_args();
         try:
+            salt = bcrypt.gensalt(); #need to store salt too
+            hashPass = bcrypt.hashpw(args['password'].encode('utf-8'),salt)    
             if args['sessionID'] and args['code']:
                 return {'status':-1,'message':'Impossible Circumstance.'}
             elif args['sessionID']:
-                #NEEDS WORK LATER
-                print(1)
+                #CHECK LATER
+                uQuery = """
+                UPDATE users SET salt = %s, passcode = %s WHERE
+                (%s, %s) IN (
+                SELECT email, sessionID from sessions left join users ON users.userID = sessions.userID
+                RIGHT JOIN
+                (select userID,max(sessionDate) as high from sessions group by userID) highDates
+                ON highDates.userID = sessions.userID
+                WHERE ((timeDuration = 'forever')
+                OR (timeduration = "HOUR" AND NOW() < date_add(sessionDate,Interval 1 Hour)))
+                )
+                """
+                cursor = connection.cursor(prepared = True);      
+                cursor.execute(uQuery,(salt,hashPass,args['email'],args['sessionID']));
+                if (cursor.rowcount == 0):
+                    return {'status':0,message:"No Updates."};
+                return {'status':0,message: "Update Occurred."}
             elif args['code']:
                 uQuery = """
                 UPDATE users SET salt = %s, passcode = %s WHERE
@@ -30,8 +47,6 @@ class ChangePassword(Resource):
                 dQuery = """
                 DELETE FROM forgottenPasswordCodes WHERE fcode = %s AND email = %s;
                 """
-                salt = bcrypt.gensalt(); #need to store salt too
-                hashPass = bcrypt.hashpw(args['password'].encode('utf-8'),salt)
                 cursor = connection.cursor(prepared = True);
                 cursor.execute(uQuery,(salt,hashPass,args['email'],args['code']));
                 if (cursor.rowcount == 0):
