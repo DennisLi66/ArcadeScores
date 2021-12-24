@@ -19,9 +19,10 @@ class ChangePassword(Resource):
         try:
             if args['sessionID'] and args['code']:
                 return {'status':-1,'message':'Impossible Circumstance.'}
-            else if args['sessionID']:
+            elif args['sessionID']:
                 #NEEDS WORK LATER
-            else if args['code']:
+                print(1)
+            elif args['code']:
                 uQuery = """
                 UPDATE users SET salt = %s, passcode = %s WHERE
                 (%s, %s) IN (SELECT email,fcode FROM forgottenPasswordCodes)
@@ -39,7 +40,7 @@ class ChangePassword(Resource):
                 cursor.execute(dQuery,(args['code'],args['email']));
                 return {'status':0,message: "Update Occurred."}
             else:
-                return {'status:'-1,'message':'Not Enough Information'}
+                return {'status':-1,'message':'Not Enough Information'}
         except Exception as e:
             return {'message': str(e), 'status': -1};       
         
