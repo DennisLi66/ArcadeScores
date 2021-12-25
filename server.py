@@ -1,5 +1,6 @@
 from flask import Flask #pip install flask
 from flask_restful import Resource, Api, reqparse #pip install flask_restful
+from flask_cors import CORS, cross_origin #pip install -U flask-cors
 import os
 from dotenv import load_dotenv #pip install python-dotenv
 import ast
@@ -17,7 +18,11 @@ from changePasswordEndpoint import ChangePassword
 
 app = Flask(__name__)
 api = Api(app)
+cors = CORS(app)
 
+app.config['CORS_HEADERS'] = 'Content-Type'
+@app.route("/")
+# @cross_origin()
 class Test(Resource):
     def get(self): #Just for Testing Connection
         return {'message': "Welcome to the ArcadeScores API."}, 200
