@@ -17,6 +17,7 @@ class ChangePassword(Resource):
         parser.add_argument('code',required=False);
         args = parser.parse_args();
         try:
+            connection = formConnection();
             salt = bcrypt.gensalt(); #need to store salt too
             hashPass = bcrypt.hashpw(args['password'].encode('utf-8'),salt)    
             if args['sessionID'] and args['code']:
@@ -37,8 +38,8 @@ class ChangePassword(Resource):
                 cursor = connection.cursor(prepared = True);      
                 cursor.execute(uQuery,(salt,hashPass,args['email'],args['sessionID']));
                 if (cursor.rowcount == 0):
-                    return {'status':0,message:"No Updates."};
-                return {'status':0,message: "Update Occurred."}
+                    return {'status':0,'message':"No Updates."};
+                return {'status':0,'message': "Update Occurred."}
             elif args['code']:
                 uQuery = """
                 UPDATE users SET salt = %s, passcode = %s WHERE
@@ -50,10 +51,10 @@ class ChangePassword(Resource):
                 cursor = connection.cursor(prepared = True);
                 cursor.execute(uQuery,(salt,hashPass,args['email'],args['code']));
                 if (cursor.rowcount == 0):
-                    return {'status':0,message:"No Updates."}
+                    return {'status':0,'message':"No Updates."}
                 cursor = connection.cursor(prepared = True);
                 cursor.execute(dQuery,(args['code'],args['email']));
-                return {'status':0,message: "Update Occurred."}
+                return {'status':0,'message': "Update Occurred."}
             else:
                 return {'status':-1,'message':'Not Enough Information'}
         except Exception as e:

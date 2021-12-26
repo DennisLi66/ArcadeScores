@@ -5,14 +5,14 @@ from formConnectionModule import formConnection
 
 class ForgotPasswordCode(Resource):
     def post(self):
-        parser = reqparser.RequestParser();
+        parser = reqparse.RequestParser();
         parser.add_argument('code',required=True);
         parser.add_argument('email',required=True);
-        args = parser.parse_arg();
+        args = parser.parse_args();
         try:
             connection = formConnection();
             query = """
-            SELECT * FROM codes WHERE email = %s AND code = %s
+            SELECT * FROM forgottenPasswordCodes WHERE email = %s AND fcode = %s
             """
             cursor = connection.cursor(prepared = True);
             cursor.execute(query,(args['email'],args['code']));

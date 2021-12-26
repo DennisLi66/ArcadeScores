@@ -29,12 +29,13 @@ class Test(Resource):
 
 api.add_resource(Test,"/") #Local Tested
 api.add_resource(Register, '/register') #Local Tested
-api.add_resource(Login, '/login') #Local Tested
+api.add_resource(Login, '/login') 
 api.add_resource(Scores, '/scores')
 api.add_resource(Times, '/times')
 api.add_resource(Sessions, '/sessions')
-api.add_resource(ForgotPassword, '/forgotpassword')
-api.add_resource(ForgotPasswordCode, '/forgotpasswordcode')
+api.add_resource(ForgotPassword, '/forgotpassword') #Local Tested
+api.add_resource(ForgotPasswordCode, '/forgotpasswordcode') #Local Tested
+api.add_resource(ChangePassword, '/changepassword'); #Local Tested
 
 if __name__ == '__main__':
     print('Server Started...')

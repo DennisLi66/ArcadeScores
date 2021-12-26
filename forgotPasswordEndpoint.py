@@ -3,7 +3,9 @@ from flask_restful import Resource, Api, reqparse #pip install flask_restful
 
 import os
 from dotenv import load_dotenv
-import smtplib
+import smtplib, ssl
+import string
+import random
 
 from formConnectionModule import formConnection
 
@@ -26,20 +28,13 @@ class ForgotPassword(Resource):
             cursor.execute(query,(code,args['email'],code));
             connection.commit();
             connection.close();
-            #EMAIL SENT HERE
-            if (cursor.rowcount == 1):
+            if (cursor.rowcount != 0):
                 load_dotenv();
                 EMAILUSER = os.getenv('EMAILUSER');
                 EMAILPASSWORD = os.getenv('EMAILPASSWORD');
-                subject = "Forgotten Password Code";
-                body = "Your recovery code is %s." % (code)
-                emailText = """\
-                From: %s
-                To: %s
-                Subject: %s
-
-                %s
-                """ % (EMAILUSER,args['email'],subject,body);
+                subject = "Forgotten Password Recovery Code";
+                body = """Your recovery code is %s.""" % (code)
+                emailText = message = 'Subject: {}\n\n{}'.format(subject,body)
                 smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465);
                 smtp_server.ehlo();
                 smtp_server.login(EMAILUSER, EMAILPASSWORD);
