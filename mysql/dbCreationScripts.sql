@@ -23,6 +23,14 @@ create table scores (
     score int,
     submissionTime datetime
 );
+create table scoreOverTimes(
+	entryID int primary key auto_Increment,
+    userID int,
+    gameID int,
+    score int,
+    timeInMilliseconds int,
+    submissionTime datetime
+);
 create table sessions(
 	sessionID varchar(255) NOT NULL,
     userID int NOT NULL,
