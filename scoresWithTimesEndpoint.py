@@ -35,5 +35,26 @@ class ScoresWithTimes(Resource):
             return {'message': str(e), 'status': -1}; 
             
     def put(self):
-        return;
+        parser = reqparse.RequestParser();
+        parser.add_argument('userID',required=True);
+        parser.add_argument('score',required=True);
+        parser.add_argument('gameID',required=True);
+        parser.add_argument('sessionID',required=True);
+        parser.add_argument('timeInMilliseconds',required=True);
+        args = parser.parse_args();
+        if (checkSession(args['userID'],args['sessionID']) == False):
+            return {'status':-2,'message':'Session Expired'}
+        try:
+            connection = formConnection();
+            query = """
+            INSERT INTO scoreOverTimes (userID,gameID,score,timeInMilliseconds,submissionTime)
+            VALUES (%s,%s,%s,%s,NOW())
+            """;
+            cursor = connection.cursor(prepared = True);
+            cursor.execute(query,(args['userID'],args['gameID'],args['score'],args['timeInMilliseconds']));
+            connection.commit();
+            connection.close();
+        except Exception as e:
+            return {'message':str(e),'status':-1}
+        return {'message':'Put Request Transaction Occured Successfully.'}, 200;
     
