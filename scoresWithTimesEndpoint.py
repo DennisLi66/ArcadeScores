@@ -18,7 +18,9 @@ class ScoresWithTimes(Resource):
             connection = formConnection();
             sortByMethod = "";
             selectFromMethod = """
-            SELECT score, timeInMilliseconds, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f') FROM scoreOverTimes WHERE gameID = %s
+            SELECT username, score, timeInMilliseconds, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f') as timeframe FROM scoreOverTimes
+            LEFT JOIN users ON users.userID = scoreOverTimes.userID
+            WHERE gameID = %s
             """;
             variables = (args['gameID'],);
             if (args['sortBy'] == "recent"):
@@ -36,8 +38,6 @@ class ScoresWithTimes(Resource):
             res = cursor.fetchall(); 
             connection.commit();
             connection.close();
-            print(res);
-            json.dumps(res, indent=4, sort_keys=True, default=str)
             return {'status':0,'results':res};
         except Exception as e:
             return {'message': str(e), 'status': -1}; 

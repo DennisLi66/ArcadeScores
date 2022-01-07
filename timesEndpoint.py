@@ -12,17 +12,16 @@ class Times(Resource):
         args = parser.parse_args();
         try:
             connection = formConnection();
-            query = "";
+            query = "SELECT username, timeInMilliseconds, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f') as timeframe FROM times LEFT JOIN users ON users.userID = times.userID";
+            variables = (args['gameID'],);
             if (args['userID']):
-                query = "SELECT time, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f')  FROM times WHERE gameID = %s AND userID = %s ORDER BY timeInMilliseconds ASC";
-                cursor = connection.cursor(prepared=True);
-                cursor.execute(query,(args['gameID'],args['userID']));
+                query += "WHERE gameID = %s AND userID = %s ORDER BY timeInMilliseconds ASC";
+                variables = (args['gameID'],args['userID']);
             else:
-                query = "SELECT time, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f') FROM times WHERE gameID = %s ORDER BY timeInMilliseconds ASC";
-                cursor = connection.cursor(prepared=True);
-                cursor.execute(query,(args['gameID']));
+                query += "WHERE gameID = %s ORDER BY timeInMilliseconds ASC";
+            cursor = connection.cursor(prepared=True);
+            cursor.execute(query,variables);
             res = cursor.fetchall(); 
-            connection.commit();
             connection.close();
             return {'status':0,'results':res}
         except Exception as e:
