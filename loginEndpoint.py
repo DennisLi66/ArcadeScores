@@ -33,7 +33,7 @@ class Login(Resource):
                 if bcrypt.checkpw(args['password'].encode('utf-8'),hashPass.encode('utf-8')):
                     sessionSequence = makeSession(userID,args['timeDuration']);
                     connection.close();
-                    return {'status': 0, 'sessionID':sessionSequence};
+                    return {'status': 0, 'userID': userID , 'sessionID':sessionSequence};
                 else:
                     connection.close();
                     return {'status': -1, 'message':'No Matches'}, 200

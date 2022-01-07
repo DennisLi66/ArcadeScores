@@ -14,11 +14,11 @@ class Scores(Resource):
             connection = formConnection();
             query = "";
             if (args['userID']):
-                query = "SELECT * FROM scores WHERE gameID = %s AND userID = %s ORDER BY score DESC";
+                query = "SELECT score, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f') FROM scores WHERE gameID = %s AND userID = %s ORDER BY score DESC";
                 cursor = connection.cursor(prepared=True);
                 cursor.execute(query,(args['gameID'],args['userID']));
             else:
-                query = "SELECT * FROM scores WHERE gameID = %s ORDER BY score DESC";
+                query = "SELECT score, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f') FROM scores WHERE gameID = %s ORDER BY score DESC";
                 cursor = connection.cursor(prepared=True);
                 cursor.execute(query,(args['gameID']));
             res = cursor.fetchall(); 

@@ -14,11 +14,11 @@ class Times(Resource):
             connection = formConnection();
             query = "";
             if (args['userID']):
-                query = "SELECT * FROM times WHERE gameID = %s AND userID = %s ORDER BY timeInMilliseconds ASC";
+                query = "SELECT time, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f')  FROM times WHERE gameID = %s AND userID = %s ORDER BY timeInMilliseconds ASC";
                 cursor = connection.cursor(prepared=True);
                 cursor.execute(query,(args['gameID'],args['userID']));
             else:
-                query = "SELECT * FROM times WHERE gameID = %s ORDER BY timeInMilliseconds ASC";
+                query = "SELECT time, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f') FROM times WHERE gameID = %s ORDER BY timeInMilliseconds ASC";
                 cursor = connection.cursor(prepared=True);
                 cursor.execute(query,(args['gameID']));
             res = cursor.fetchall(); 

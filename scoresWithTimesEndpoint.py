@@ -3,6 +3,9 @@ from flask_restful import Resource, Api, reqparse #pip install flask_restful
 
 from formConnectionModule import formConnection
 from checkSessionsFunction import checkSession
+import json
+import datetime
+
 
 class ScoresWithTimes(Resource):
     def get(self):
@@ -14,7 +17,9 @@ class ScoresWithTimes(Resource):
         try:
             connection = formConnection();
             sortByMethod = "";
-            selectFromMethod = "SELECT * FROM scoreOverTimes WHERE gameID = %s";
+            selectFromMethod = """
+            SELECT score, timeInMilliseconds, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f') FROM scoreOverTimes WHERE gameID = %s
+            """;
             variables = (args['gameID'],);
             if (args['sortBy'] == "recent"):
                 sortByMethod = " ORDER BY submissionTime DESC";
@@ -31,6 +36,8 @@ class ScoresWithTimes(Resource):
             res = cursor.fetchall(); 
             connection.commit();
             connection.close();
+            print(res);
+            json.dumps(res, indent=4, sort_keys=True, default=str)
             return {'status':0,'results':res};
         except Exception as e:
             return {'message': str(e), 'status': -1}; 

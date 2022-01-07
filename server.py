@@ -39,6 +39,8 @@ api.add_resource(ForgotPasswordCode, '/forgotpasswordcode') #Local Tested
 api.add_resource(ChangePassword, '/changepassword'); #Local Tested
 api.add_resource(ScoresWithTimes, '/scoreswithtimes');
 
+#FIX THIS UPDATE SCORES WITH USERNAMES
+
 if __name__ == '__main__':
     print('Server Started...')
     connection = formConnection();
