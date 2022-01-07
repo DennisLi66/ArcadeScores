@@ -2,6 +2,7 @@ from flask import Flask #pip install flask
 from flask_restful import Resource, Api, reqparse #pip install flask_restful
 
 from formConnectionModule import formConnection
+from makeSessionModule import makeSession
 import bcrypt
 import string
 import random
@@ -30,12 +31,7 @@ class Login(Resource):
                     userID = row[0];
                     hashPass = row[4];
                 if bcrypt.checkpw(args['password'].encode('utf-8'),hashPass.encode('utf-8')):
-                    sessionSequence = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-                    insertSessionQuery = """
-                    INSERT INTO sessions (sessionID,userID,sessionDate,timeDuration) VALUES (%s,%s,NOW(),%s)
-                    """
-                    cursor = connection.cursor(prepared = True);
-                    cursor.execute(insertSessionQuery,[sessionSequence,userID,args['timeDuration']])
+                    sessionSequence = makeSession(userID,args['timeDuration']);
                     connection.close();
                     return {'status': 0, 'sessionID':sessionSequence};
                 else:
