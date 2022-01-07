@@ -14,7 +14,7 @@ class ScoresWithTimes(Resource):
             connection = formConnection();
             sortByMethod = "";
             selectFromMethod = "SELECT * FROM scoreOverTimes WHERE gameID = %s";
-            variables = (args['gameID']);
+            variables = (args['gameID'],);
             if (args['sortBy'] == "recent"):
                 sortByMethod = " ORDER BY submissionTime DESC";
             elif (args['sortBy'] == "top"):
