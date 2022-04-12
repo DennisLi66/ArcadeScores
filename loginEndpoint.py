@@ -29,11 +29,12 @@ class Login(Resource):
                 for row in results:
                     salt = row[3];
                     userID = row[0];
+                    name = row[1];
                     hashPass = row[4];
                 if bcrypt.checkpw(args['password'].encode('utf-8'),hashPass.encode('utf-8')):
                     sessionSequence = makeSession(userID,args['timeDuration']);
                     connection.close();
-                    return {'status': 0, 'userID': userID , 'sessionID':sessionSequence};
+                    return {'status': 0, 'userID': userID , 'sessionID':sessionSequence, 'name':name};
                 else:
                     connection.close();
                     return {'status': -1, 'message':'No Matches'}, 200
