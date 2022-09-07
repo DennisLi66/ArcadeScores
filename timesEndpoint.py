@@ -15,13 +15,14 @@ class Times(Resource):
             query = "SELECT username, timeInMilliseconds, DATE_FORMAT(submissionTime, '%Y-%m-%d %T.%f') as timeframe FROM times LEFT JOIN users ON users.userID = times.userID";
             variables = (args['gameID'],);
             if (args['userID']):
-                query += "WHERE gameID = %s AND userID = %s ORDER BY timeInMilliseconds ASC";
+                query += " WHERE gameID = %s AND userID = %s ORDER BY timeInMilliseconds ASC";
                 variables = (args['gameID'],args['userID']);
             else:
-                query += "WHERE gameID = %s ORDER BY timeInMilliseconds ASC";
+                query += " WHERE gameID = %s ORDER BY timeInMilliseconds ASC";
             cursor = connection.cursor(prepared=True);
             cursor.execute(query,variables);
             res = cursor.fetchall(); 
+            connection.commit();
             connection.close();
             return {'status':0,'results':res}
         except Exception as e:
