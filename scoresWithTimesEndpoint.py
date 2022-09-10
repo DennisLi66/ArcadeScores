@@ -23,15 +23,15 @@ class ScoresWithTimes(Resource):
             WHERE gameID = %s
             """;
             variables = (args['gameID'],);
+            if (args['userID']):
+                selectFromMethod += "AND scoreOverTimes.userID = %s";
+                variables = (args['gameID'],args['userID']);
             if (args['sortBy'] == "recent"):
                 sortByMethod = " ORDER BY submissionTime DESC";
             elif (args['sortBy'] == "top"):
                 sortByMethod = " ORDER BY score DESC, timeInMilliseconds ASC";
             else:
                 return {'message': "Sort By Choice Invalid.", 'status':-1};
-            if (args['userID']):
-                selectFromMethod = "SELECT * FROM scoreOverTimes WHERE gameID = %s AND userID = %s";
-                variables = (args['gameID'],args['userID']);
             query = selectFromMethod + sortByMethod;
             cursor = connection.cursor(prepared=True);
             cursor.execute(query,variables);
